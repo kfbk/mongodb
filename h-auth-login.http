@@ -1,0 +1,26 @@
+###
+POST http://localhost:5000/api/auth/login/
+Content-Type: application/json
+
+{
+    "email": "tabi30",
+    "password": "satousatou79"
+}
+
+###
+GET http://localhost:5000/api/auth/user/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNjRlOTVjZDYxZGY3YzI5OTVjMTRmZCIsIm5hbWUiOiLkvZDol6TpgqbnlLciLCJlbWFpbCI6InRhYmkzMCIsImlhdCI6MTY4Njk4NDk2NX0.jJQ3OwxbOB59G21OxPnI9t31yfQlc9UZJtwus7VgvoE
+
+###
+POST https://t0zlc9.deta.dev/api/auth/login/
+Content-Type: application/json
+
+{
+    "email": "kevin7@test.com",
+    "password": "password"
+}
+
+###
+GET http://t0zlc9.deta.dev/api/auth/user/
+Authorization: Bearer
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMjU2ZTY3M2FmMmEwYmViOTUwZjYxNCIsIm5hbWUiOiJrZXZpbjciLCJlbWFpbCI6ImtldmluN0B0ZXN0LmNvbSIsImlhdCI6MTY2MzU2Njc3OX0.nbbpOvAJ2F5Ee89cLfQvmQRXedkxRe6qNClYZHnbqHU

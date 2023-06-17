@@ -1,0 +1,167 @@
+detaに新規Webサービスをデプロイする手順
+https://www.lisz-works.com/entry/deta-deploy
+
+2022年11月にHerokuの無料枠が無くなるそうだ。
+ハイキングクラブのHPを担当しており、その会員専用ページ用として、Herokuを使ってる。
+幸いというか、そのページを使っている人がいないので、無くなってもよいが、
+せっかくだから自分のスキルアップとして、代替え出来そうな「deta.sh」に挑戦しようと思う。
+現状のHerokuには「express mongoose nodemon」の3つをインストールしている。
+少し調べたら、「deta.sh」はローカルでは動かず、Herokuみたいにローカルで作ってGitプッシュすることが出来ないみたい。
+「deta.sh」はnodeが動くそうなので、「express mongoose」をインストールできるのか。不安だらけ。
+あるサイトの説明では、WindowsではWSLで行ったとのことなので、WSLをインストールした。
+そして、その説明のCLIのインストールでは
+「iwr https://get.deta.dev/cli.ps1 -useb | iex」
+とあるが、iwrはWSLのUbuntuでは動かず、PowerShellで動きそう。
+とにかく、やってみました。
+
+１．detaに登録
+	username	satou1497
+	password	Satousatou#110
+	email		satou1497@live.jp
+   sign in
+	Project Key	default-project-key
+	Project ID	c0t7wu1m
+
+２．CLIのインストール
+
+	CLIをインストールするにはWSLが必要そうなので参照をみること
+	ただし、WSLは必要ないかもしれない。DETAの画面で「Windows」を選ぶとPoerShellで次を行え、とある
+		iwr https://get.deta.dev/cli.ps1 -useb | iex
+	次が表示されたので、再起動
+		Deta was installed successfully to C:\Users\user\.deta\bin\deta.exe
+
+３．CLIでログイン
+
+	deta loginを実行してログインを行います
+
+４．microを作成する
+
+	プロジェクトディレクトリを作成しておき、その中でdeta newを実行してmicroを作成します
+		mkdir deta-test
+		cd deta-test
+		deta new --node deta-test
+			Successfully created a new micro
+			{
+			        "name": "deta-test",
+			        "id": "57562002-7212-477e-bf48-3049ee300c87",
+			        "project": "c0t7wu1m",
+			        "runtime": "nodejs14.x",
+			        "endpoint": "https://4ucduy.deta.dev",
+			        "region": "ap-southeast-1",
+			        "visor": "disabled",
+			        "http_auth": "disabled"
+			}
+		cd deta-test（再度、行う）
+		
+		npm init -y			初期化（-y package.jsonファイルが作成）
+		npm install express
+		deta deploy			デプロイ
+		maicro名の右にURLがあるので、クリック
+			（https://itnews.org/news_contents/deta ここを参照して動くようになった）
+		ここにある「index.js」を編集
+		deta deploy			デプロイ
+		maicro名の右にURLがあるので、クリック
+
+	上のディレクトリは間違い。gitディレクトリでdeta newを実行すればよい。
+
+５．本番
+
+	PowerShell起動
+		cd git
+	deta newを実行してmicroを作成します
+		WEBにて「Logout」しておく
+		deta login	--> WEBにてログインする
+			Logged in successfully.
+		deta new --node mongodb-cloud2
+			Successfully created a new micro
+			{
+			        "name": "mongodb-cloud2",
+			        "id": "ea8c5885-e77e-42e9-98ff-f144c99d2fe6",
+			        "project": "c0t7wu1m",
+			        "runtime": "nodejs14.x",
+			        "endpoint": "https://t0zlc9.deta.dev",
+			        "region": "ap-southeast-1",
+			        "visor": "disabled",
+			        "http_auth": "disabled"
+			}
+		cd  mongodb-cloud2
+			Mode                 LastWriteTime         Length Name
+			----                 -------------         ------ ----
+			d-----        2022/09/15      8:42                .deta
+			-a----        2022/09/15      8:42            195 index.js
+		npm init -y
+			Wrote to C:\Users\user\git\mongodb-cloud2\package.json:
+
+			{
+			  "name": "mongodb-cloud2",
+			  "version": "1.0.0",
+			  "description": "",
+			  "main": "index.js",
+			  "scripts": {
+			    "test": "echo \"Error: no test specified\" && exit 1"
+			  },
+			  "keywords": [],
+			  "author": "",
+			  "license": "ISC"
+			}
+		npm install express mongoose		--> package.jsonにmongooseがあった。
+		deta deploy
+			新しく「https://t0zlc9.deta.dev/」が作られた	-->Hello World!
+	編集とデプロイの繰り返し
+		「index.js」を編集
+			ローカルで動くが、一部、変更してからデプロイする。
+		deta deploy
+
+６．「【完全版】MongoDB Cloud　(アカウント登録からEXPRESS サーバからの接続まで)」反映
+	https://reffect.co.jp/node-js/mongodb-cloud
+
+	疑似POSTリクエスト（https://t0zlc9.deta.dev/posts/create）	mongoDBへのアクセス OK
+
+７．「Express.jsでJSON WEB TOKEN(JWT)の設定を行う」反映
+	https://reffect.co.jp/node-js/express-js%e3%81%a7json-web-tokenjwt%e3%81%ae%e8%a8%ad%e5%ae%9a%e3%82%92%e8%a1%8c%e3%81%86
+
+	npm install bcrypt
+	以下、ローカルとDetaで切り替えて、1つずつ確認していくこと
+	切り替え方法
+		ローカル	indes.js最下部をローカルにする
+				Terminalにて「node index.js」を実行
+				h-users.http 実行
+		Deta		indes.js最下部をDetaにする
+				deta deploy
+				Detaページから例えば「https://t0zlc9.deta.dev/api/users」
+	/api/users		共に OK
+	/api/auth/register	共に OK
+	/api/auth/login/	JWTなしをローカルでOK
+
+	npm install jsonwebtoken	JSON WEB TOKENのインストール
+	/api/auth/login/	JWTありを共に OK
+　　	/api/auth/user/		共に：loginの応答にTokenを返したが、403エラー
+
+	npm install cors	backend-loginをローカルで動かし、本番にログインエラーで
+				「has been blocked by CORS policy」なので、インストール
+
+	/api/auth/login/	backend-loginをローカルで動かし、本番にログイン → OK
+
+参考
+	佐藤邦男	id=tabi30	pass=satousatou79
+
+
+参照：WSL
+
+	Windows 10／11でLinux環境「WSL」を始める第一歩
+	https://atmarkit.itmedia.co.jp/ait/articles/2201/28/news029.html
+
+	管理者用Shellにてインストール
+		wsl.exe --install		optionを指定しないのでubuntuになる
+		再起動
+		ubuntuのインストールが続行	Ubuntu 20.04 LTS（Ubuntu-20.04）がインストールされた。
+		user名：satou
+		パスワード：blkge
+	ubuntuの起動
+		スタート→ubuntu
+		exit で終了すること
+	PowerShellから
+		dir \\wsl$\Ubuntu-20.04		存在しないため検出できません
+	Windows エクスプローラー
+		アドレス バーに次のように入力します: \\wsl$
+

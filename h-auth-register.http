@@ -1,0 +1,21 @@
+###
+POST http://localhost:5000/api/auth/register/
+Content-Type: application/json
+
+{
+  "name": "kevin9",
+  "email": "kevin9@test.com",
+  "password": "password",
+  "order": "31"
+}
+
+###
+POST https://t0zlc9.deta.dev/api/auth/register/
+Content-Type: application/json
+
+{
+  "name": "kevin7",
+  "email": "kevin7@test.com",
+  "password": "password",
+  "order": "31"
+}
